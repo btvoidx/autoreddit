@@ -1,29 +1,30 @@
 # -*- coding: utf-8 -*-
+# Main code 
 import vk_api
 import requests
 import time
 
 #   Settings   ##############################################
 group_id = "-180517625"
-group_id_cache = "180517625"
 album_id = "261824317"
 max_posts = 24
 max_retries = max_posts * 4
 time_between = 3600
-
-user_token="9c13eb6698fca9f01add63ed27e34b7aeea299a458393bb4075b1c1d4e32f867d599300ce9483cddc5675"
-group_token="ab18b179bca28b68b8e9cc44d3354ff958887804dace0b1b30c382690009da00f90e306e5ab15dbc16e64"
 #############################################################
 
 #   Persistent vars   #######################################
-info = {"version": "0.2.9 beta", "author": "btvoidx"}
+info = {
+	"version": "0.2.10"
+	"author": "vk.com/btvoidx"
+}
 headers = {
 	"User-Agent": "Python Automatic posts grabber (by /u/btvoidx)"
 }
 #############################################################
 
+# Uploading photo to VK is very annoying process. Why i just cant add images to post using urls?
 def uploadPhoto(vk, url, group_id, album_id):
-	destination = vk.photos.getUploadServer(album_id=album_id, group_id=group_id_cache)
+	destination = vk.photos.getUploadServer(album_id=album_id, group_id=abs(group_id))
 
 	image = requests.get(url, stream=True)
 	data = ("image.jpg", image.raw, image.headers['Content-Type'])
@@ -31,6 +32,7 @@ def uploadPhoto(vk, url, group_id, album_id):
 	photo = vk.photos.save(group_id=group_id, album_id=album_id, **meta)[0]
 	return photo
 
+# Make sure script can download image with url.
 def validateURL(url):
 	url = url.replace("://imgur.com", "://i.imgur.com")
 	if url.split(".")[-1] not in ["png", "jpg", "jpeg", "gif"]:
@@ -41,8 +43,13 @@ def retried(retries):
 	retries = retries + 1
 	return retries
 
-def main(subreddit):
-	post_time = int(time.time()) + 120
+def loadtokens(file):
+	token = open(file).read()
+	return token
+
+# Main function. Needs some code improvements.
+def main(user_token, subreddit):
+	post_time = int(time.time()) + 120 # Adding 120 seconds because i running this script 2 minutes before *:00. My host is very busy doing all tasks at *:00
 	retries = 0
 
 	vk_session = vk_api.VkApi(
@@ -50,7 +57,7 @@ def main(subreddit):
 	)
 	vk = vk_session.get_api()
 
-	vk.groups.edit(group_id=group_id_cache, photos=2)
+	vk.groups.edit(group_id=abs(group_id), photos=2) # Open group photos so script can add new photos to album.
 
 	got_r = True
 	while got_r:
@@ -69,6 +76,7 @@ def main(subreddit):
 		got_p_u = True
 		got_p_p = True
 		try:
+			# I like how this string ruins my tabs.
 			print("""
 Post {} of {}:
 Subreddit: {};
@@ -86,13 +94,14 @@ Image URL: {}.
 			)
 		except:
 			print("Something went wrong. Trying to continue without printing about post.")
+
 		message = "{}\n\n/u/{}".format(post["data"]["title"].encode("utf-8"), post["data"]["author"].encode("utf-8"))
 		post_time = post_time + time_between
 
 		while got_p_u:
 			try:
 				newurl = validateURL(post["data"]["url"])
-				image = uploadPhoto(vk, newurl, group_id_cache, album_id)
+				image = uploadPhoto(vk, newurl, abs(group_id), album_id)
 				image = "photo" + group_id + "_" + str(image["id"])
 				got_p_u = False
 			except:
@@ -108,10 +117,12 @@ Image URL: {}.
 			except:
 				if retried(retries) > max_retries:
 					return "Good job, your bot stopped working!"
+
 				print("Unable to schedule post." + message.decode("utf-8"))
 				time.sleep(5)
 
-	vk.groups.edit(group_id=group_id_cache, photos=0)
+	vk.groups.edit(group_id=abs(group_id), photos=0) # Close group photos so noone can see what we added today. (But there is a bug. Anyone can still see added photos on news page)
 
 if __name__ == '__main__':
-	main("mildlyinteresting")
+	token = loadtokens("tokens.ignore")
+	main(token, "mildlyinteresting")
