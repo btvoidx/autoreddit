@@ -5,8 +5,8 @@ import requests
 import time
 
 #   Settings   ##############################################
-group_id = "-180517625"
-album_id = "261824317"
+group_id = -180517625
+album_id = 261824317
 max_posts = 24
 max_retries = max_posts * 4
 time_between = 3600
@@ -14,7 +14,7 @@ time_between = 3600
 
 #   Persistent vars   #######################################
 info = {
-	"version": "0.2.10"
+	"version": "0.2.11",
 	"author": "vk.com/btvoidx"
 }
 headers = {
