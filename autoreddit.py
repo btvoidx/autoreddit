@@ -13,8 +13,9 @@ time_between = 3600
 #############################################################
 
 #   Persistent vars   #######################################
+retries = 0
 info = {
-	"version": "0.2.11",
+	"version": "0.3.0",
 	"author": "vk.com/btvoidx"
 }
 headers = {
@@ -39,9 +40,17 @@ def validateURL(url):
 		url = url + ".png"
 	return url
 
-def retried(retries):
-	retries = retries + 1
-	return retries
+def failproof(function, failtext):
+	global retries
+	while True:
+		try:
+			return function
+		except:
+			retries = retries + 1
+			if retries > max_retries:
+				return False
+			print(failtext)
+			time.sleep(3)
 
 def loadtokens(file):
 	token = open(file).read()
@@ -50,7 +59,6 @@ def loadtokens(file):
 # Main function. Needs some code improvements.
 def main(user_token, subreddit):
 	post_time = int(time.time()) + 120 # Adding 120 seconds because i running this script 2 minutes before *:00. My host is very busy doing all tasks at *:00
-	retries = 0
 
 	vk_session = vk_api.VkApi(
 		token=user_token
@@ -59,67 +67,47 @@ def main(user_token, subreddit):
 
 	vk.groups.edit(group_id=abs(group_id), photos=2) # Open group photos so script can add new photos to album.
 
-	got_r = True
-	while got_r:
-		try:
-			r = requests.get("https://www.reddit.com/r/{}/top.json?sort=hot&limit={}&raw_json=1".format(subreddit, max_posts), headers=headers)
-			got_r = False
-		except:
-			if retried(retries) > max_retries:
-				return "Good job, your bot stopped working!"
-			print("Unable to grab reddit posts.")
-			time.sleep(5)
+	r = failproof(
+		requests.get("https://www.reddit.com/r/{}/top.json?sort=hot&limit={}&raw_json=1".format(subreddit, max_posts), headers=headers),
+		"Reddit data grab failed."
+	)
 
 	counter = 0
 	for post in r.json()["data"]["children"]:
 		counter = counter + 1
-		got_p_u = True
-		got_p_p = True
+		# I don't use here failproof() because script CAN work without printing result. It's not a big problem if it can't.
 		try:
-			# I like how this string ruins my tabs.
-			print("""
-Post {} of {}:
-Subreddit: {};
-Title: {};
-From: {};
-Image URL: {}.
-
-				""".format(
-					counter, max_posts,
-					post["data"]["subreddit"].encode("utf-8"),
-					post["data"]["title"].encode("utf-8"),
-					post["data"]["author"].encode("utf-8"),
-					post["data"]["url"].encode("utf-8")
-				)
+			print("Post {} of {}:\nSubreddit: {};\nTitle: {};\nFrom: {};\nImage URL: {}.\n".format(
+				counter, max_posts,
+				post["data"]["subreddit"].encode("utf-8"),
+				post["data"]["title"].encode("utf-8"),
+				post["data"]["author"].encode("utf-8"),
+				post["data"]["url"].encode("utf-8")
 			)
+		)
 		except:
-			print("Something went wrong. Trying to continue without printing about post.")
+			print("Can't print result of post {}. Trying to continue.".format(counter))
 
 		message = "{}\n\n/u/{}".format(post["data"]["title"].encode("utf-8"), post["data"]["author"].encode("utf-8"))
 		post_time = post_time + time_between
 
-		while got_p_u:
-			try:
-				newurl = validateURL(post["data"]["url"])
-				image = uploadPhoto(vk, newurl, abs(group_id), album_id)
-				image = "photo" + group_id + "_" + str(image["id"])
-				got_p_u = False
-			except:
-				if retried(retries) > max_retries:
-					return "Good job, your bot stopped working!"
-				print("Unable to upload photo to VK, {}".format(post["data"]["url"]))
-				time.sleep(5)
+		
+		newurl = failproof(
+			validateURL(post["data"]["url"]),
+			"URL validation failed."
+		)
+		image = failproof(
+			uploadPhoto(vk, newurl, abs(group_id), album_id),
+			"Failed to upload photo to VK."
+		)
+		image = "photo" + str(group_id) + "_" + str(image["id"])
 
-		while got_p_p:
-			try:
-				vk.wall.post(owner_id=group_id, message=message.decode("utf-8"), publish_date=post_time, attachments=image)
-				got_p_p = False
-			except:
-				if retried(retries) > max_retries:
-					return "Good job, your bot stopped working!"
-
-				print("Unable to schedule post." + message.decode("utf-8"))
-				time.sleep(5)
+	
+		failproof(
+			vk.wall.post(owner_id=group_id, message=message.decode("utf-8"), publish_date=post_time, attachments=image),
+			"Unable to schedule post." + message.decode("utf-8")
+		)
+		
 
 	vk.groups.edit(group_id=abs(group_id), photos=0) # Close group photos so noone can see what we added today. (But there is a bug. Anyone can still see added photos on news page)
 
