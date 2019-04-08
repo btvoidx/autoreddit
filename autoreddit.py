@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# Main code 
 import vk_api
 import requests
 import time
@@ -8,14 +7,14 @@ import time
 group_id = -180517625
 album_id = 261824317
 max_posts = 24
-max_retries = max_posts * 4
+max_retries = max_posts * 2
 time_between = 3600
 #############################################################
 
 #   Persistent vars   #######################################
 retries = 0
 info = {
-	"version": "0.3.0",
+	"version": "19.04.08",
 	"author": "vk.com/btvoidx"
 }
 headers = {
@@ -40,6 +39,7 @@ def validateURL(url):
 		url = url + ".png"
 	return url
 
+# Repeat given function when fails
 def failproof(function, failtext):
 	global retries
 	while True:
