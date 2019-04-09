@@ -2,6 +2,5 @@ This script grabs posts from [reddit](https://www.reddit.com) and puts it into [
 Feel free to commit changes to code and fixing bugs.
 
 
-Author: [btvoidx](https://vk.com/btvoidx)
-
+Author: [btvoidx](https://vk.com/btvoidx)  
 Original Project: [VK Group](https://vk.com/autoreddit)
