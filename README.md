@@ -1,6 +1,6 @@
-This script grabs posts from [reddit](https://www.reddit.com) and puts it into [VK group](https://vk.com/autoreddit) as delayed post.  
-Feel free to commit changes to code and fixing bugs.
+Этот скрипт скачивает посты с [реддита](https://www.reddit.com) и суёт в [группу в ВК](https://vk.com/autoreddit) в отложку.  
+Найдёте баги и недочёты, делайте коммиты, не будет лишним поправить.
 
 
-Author: [btvoidx](https://vk.com/btvoidx)  
-Original Project: [VK Group](https://vk.com/autoreddit)
+Автор: [btvoidx](https://vk.com/btvoidx)  
+Группа: [тык](https://vk.com/autoreddit)
