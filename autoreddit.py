@@ -14,7 +14,7 @@ time_between = 3600
 #   Persistent vars   #######################################
 retries = 0
 info = {
-	"version": "19.04.08",
+	"version": "19.04.10",
 	"author": "vk.com/btvoidx"
 }
 headers = {
@@ -42,12 +42,14 @@ def validateURL(url):
 # Repeat given function when fails
 def failproof(function, failtext):
 	global retries
+	current_retries = 0
 	while True:
 		try:
 			return function
 		except:
 			retries = retries + 1
-			if retries > max_retries:
+			current_retries = current_retries + 1
+			if retries > max_retries or current_retries >= 5:
 				return False
 			print(failtext)
 			time.sleep(3)
