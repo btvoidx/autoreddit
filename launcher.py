@@ -12,8 +12,10 @@ with open(filename) as f:
 	downloaded = requests.get("https://raw.githubusercontent.com/{}/master/{}".format(repo, filename)).text
 
 	if current == downloaded:
+		print("Script is up to date!")
 		system("python3.7 {}".format(filename))
 	else:
+		print("Script update detected! Updating!")
 		f.close()
 		f = open(filename, "w")
 		f.write(downloaded)
