@@ -15,7 +15,7 @@ time_between = 3600
 #   Persistent vars   #######################################
 retries = 0
 info = {
-	"version": "19.04.10",
+	"version": "19.04.11",
 	"author": "vk.com/btvoidx"
 }
 headers = {
@@ -108,7 +108,7 @@ def main(user_token, subreddit):
 	
 		failproof(
 			vk.wall.post(owner_id=group_id, message=message.decode("utf-8"), publish_date=post_time, attachments=image),
-			"Unable to schedule post." + message.decode("utf-8")
+			"Unable to schedule post. {}".format(message.decode("utf-8"))
 		)
 		
 
