@@ -68,8 +68,6 @@ def main(user_token, subreddit):
 	)
 	vk = vk_session.get_api()
 
-	vk.groups.edit(group_id=abs(group_id), photos=2) # Open group photos so script can add new photos to album.
-
 	r = failproof(
 		requests.get("https://www.reddit.com/r/{}/top.json?sort=hot&limit={}&raw_json=1".format(subreddit, max_posts), headers=headers),
 		"Reddit data grab failed."
@@ -111,9 +109,6 @@ def main(user_token, subreddit):
 			"Unable to schedule post. {}".format(message.decode("utf-8"))
 		)
 		
-
-	vk.groups.edit(group_id=abs(group_id), photos=0) # Close group photos so noone can see what we added today. (But there is a bug. Anyone can still see added photos on news page)
-
 if __name__ == '__main__':
 	token = loadtokens("tokens.ignore")
 	main(token, "mildlyinteresting")
