@@ -4,17 +4,18 @@ import requests
 from os import system as run
 
 repo = "btvoidx/autoreddit"
-file = "main.py"
+filename = "main.py"
+filepath = "autoreddit/main.py"
 
-with open(file) as f:
+with open(filepath) as f:
 	current = f.read()
-	downloaded = requests.get("https://raw.githubusercontent.com/{}/master/{}".format(repo, file)).text
+	downloaded = requests.get("https://raw.githubusercontent.com/{}/master/{}".format(repo, filename)).text
 
 	if current == downloaded:
-		run("python3.7 {}".format(file))
+		run("python3.7 {}".format(filepath))
 	else:
 		f.close()
-		f = open(file, "w")
+		f = open(filepath, "w")
 		f.write(downloaded)
 
-		run("python3.7 {}".format(file))
+		run("python3.7 {}".format(filepath))
