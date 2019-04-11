@@ -13,11 +13,11 @@ with open(filename) as f:
 
 	if current == downloaded:
 		print("Script is up to date!")
-		system("python3.7 {}".format(filename))
 	else:
 		print("Script update detected! Updating!")
 		f.close()
 		f = open(filename, "w")
 		f.write(downloaded)
 
-		system("python3.7 {}".format(filename))
+	f.close()
+	system("python3.7 {}".format(filename))
