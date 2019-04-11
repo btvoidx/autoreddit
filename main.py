@@ -90,7 +90,7 @@ def main(user_token, subreddit):
 		except:
 			print("Can't print result of post {}. Trying to continue.".format(counter))
 
-		message = "{}\n\n/u/{}".format(post["data"]["title"].encode("utf-8"), post["data"]["author"].encode("utf-8"))
+		message = "{}\n\n/u/{}".format(post["data"]["title"], post["data"]["author"])
 		post_time = post_time + time_between
 
 		
@@ -110,7 +110,7 @@ def main(user_token, subreddit):
 		failproof(
 			"Unable to schedule post. {}".format(message),
 			vk.wall.post,
-			owner_id=group_id, message=message.decode("utf-8"), publish_date=post_time, attachments=image
+			owner_id=group_id, message=message, publish_date=post_time, attachments=image
 		)
 		
 if __name__ == '__main__':
