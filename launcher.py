@@ -3,7 +3,7 @@
 import requests
 from os import system, chdir, getcwd
 
-repo = "btvoidx/autoreddit"
+repo = "btvoidx/mildlybot"
 filename = "main.py"
 chdir(getcwd() + "/autoreddit/")
 
