@@ -59,7 +59,7 @@ def loadtokens(file):
 	token = open(file).read()
 	return token
 
-# Main function. Needs some code improvements.
+# Main function.
 def main(user_token, subreddit):
 	post_time = int(time.time()) + 120 # Adding 120 seconds because i running this script 2 minutes before *:00. My host is very busy doing all tasks at *:00
 
