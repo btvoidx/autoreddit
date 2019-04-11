@@ -41,12 +41,12 @@ def validateURL(url):
 	return url
 
 # Repeat given function when fails
-def failproof(function, failtext):
+def failproof(failtext, function, **kwargs):
 	global retries
 	current_retries = 0
 	while True:
 		try:
-			return function
+			return function(**kwargs)
 		except:
 			retries = retries + 1
 			current_retries = current_retries + 1
@@ -69,8 +69,9 @@ def main(user_token, subreddit):
 	vk = vk_session.get_api()
 
 	r = failproof(
-		requests.get("https://www.reddit.com/r/{}/top.json?sort=hot&limit={}&raw_json=1".format(subreddit, max_posts), headers=headers),
-		"Reddit data grab failed."
+		"Reddit data grab failed.",
+		requests.get,
+		url="https://www.reddit.com/r/{}/top.json?sort=hot&limit={}&raw_json=1".format(subreddit, max_posts), headers=headers
 	)
 
 	counter = 0
@@ -89,24 +90,27 @@ def main(user_token, subreddit):
 		except:
 			print("Can't print result of post {}. Trying to continue.".format(counter))
 
-		message = "{}\n\n/u/{}".format(post["data"]["title"].encode("utf-8"), post["data"]["author"].encode("utf-8"))
+		message = "{}\n\n/u/{}".format(post["data"]["title"], post["data"]["author"])
 		post_time = post_time + time_between
 
 		
 		newurl = failproof(
-			validateURL(post["data"]["url"]),
-			"URL validation failed."
+			"URL validation failed.",
+			validateURL,
+			url=post["data"]["url"]
 		)
 		image = failproof(
-			uploadPhoto(vk, newurl, abs(group_id), album_id),
-			"Failed to upload photo to VK."
+			"Failed to upload photo to VK.",
+			uploadPhoto,
+			vk=vk, url=newurl, group_id=abs(group_id), album_id=album_id
 		)
 		image = "photo" + str(group_id) + "_" + str(image["id"])
 
 	
 		failproof(
-			vk.wall.post(owner_id=group_id, message=message.decode("utf-8"), publish_date=post_time, attachments=image),
-			"Unable to schedule post. {}".format(message.decode("utf-8"))
+			"Unable to schedule post. {}".format(message),
+			vk.wall.post,
+			owner_id=group_id, message=message, publish_date=post_time, attachments=image
 		)
 		
 if __name__ == '__main__':
