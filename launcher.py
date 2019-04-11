@@ -1,21 +1,21 @@
 #!/usr/bin/python3.7
 # -*- coding: utf-8 -*-
 import requests
-from os import system as run
+from os import system, chdir, getcwd
 
 repo = "btvoidx/autoreddit"
 filename = "main.py"
-filepath = "autoreddit/main.py"
+chdir(getcwd() + "/autoreddit/")
 
-with open(filepath) as f:
+with open(filename) as f:
 	current = f.read()
 	downloaded = requests.get("https://raw.githubusercontent.com/{}/master/{}".format(repo, filename)).text
 
 	if current == downloaded:
-		run("python3.7 {}".format(filepath))
+		system("python3.7 {}".format(filename))
 	else:
 		f.close()
-		f = open(filepath, "w")
+		f = open(filename, "w")
 		f.write(downloaded)
 
-		run("python3.7 {}".format(filepath))
+		system("python3.7 {}".format(filename))
