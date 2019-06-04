@@ -4,20 +4,22 @@ import requests
 from os import system, chdir, getcwd
 
 repo = "btvoidx/mildlybot"
-filename = "main.py"
+files = ["main.py", "launcher.py"]
 chdir(getcwd() + "/autoreddit/")
 
-with open(filename) as f:
-	current = f.read()
-	downloaded = requests.get("https://raw.githubusercontent.com/{}/master/{}".format(repo, filename)).text
+for filename in files:
+	with open(filename) as f:
+		current = f.read()
+		downloaded = requests.get("https://raw.githubusercontent.com/{repo}/master/{filename}").text
 
-	if current == downloaded:
-		print("Script is up to date!")
-	else:
-		print("Script update detected! Updating!")
+		if current == downloaded:
+			print("{filename} is up to date!")
+		else:
+			print("{filename} can be updated! Updating!")
+			f.close()
+			f = open(filename, "w")
+			f.write(downloaded)
+
 		f.close()
-		f = open(filename, "w")
-		f.write(downloaded)
 
-	f.close()
-	system("python3.7 {}".format(filename))
+system("python3.7 {files[0]}")
