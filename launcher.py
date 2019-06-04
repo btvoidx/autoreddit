@@ -10,16 +10,16 @@ chdir(getcwd() + "/autoreddit/")
 for filename in files:
 	with open(filename) as f:
 		current = f.read()
-		downloaded = requests.get("https://raw.githubusercontent.com/{repo}/master/{filename}").text
+		downloaded = requests.get(f"https://raw.githubusercontent.com/{repo}/master/{filename}").text
 
 		if current == downloaded:
-			print("{filename} is up to date!")
+			print(f"{filename} is up to date!")
 		else:
-			print("{filename} can be updated! Updating!")
+			print(f"{filename} can be updated! Updating!")
 			f.close()
 			f = open(filename, "w")
 			f.write(downloaded)
 
 		f.close()
 
-system("python3.7 {files[0]}")
+system(f"python3.7 {files[0]}")
