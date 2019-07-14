@@ -5,8 +5,8 @@ import requests
 import time
 
 #   Settings   ##############################################
-group_id = -180517625
-album_id = 261824317
+groups = [{"subreddit":"mildlyinteresting", "group_id":-180517625, "album_id":261824317}]
+
 max_posts = 24
 max_retries = max_posts * 2
 time_between = 3600
@@ -60,7 +60,7 @@ def loadtokens(file):
 	return token
 
 # Main function.
-def main(user_token, subreddit):
+def main(user_token, subreddit, group_id, album_id):
 	post_time = int(time.time()) + 120 # Adding 120 seconds because i running this script 2 minutes before *:00. My host is very busy doing all tasks at *:00
 
 	vk_session = vk_api.VkApi(
@@ -115,4 +115,5 @@ def main(user_token, subreddit):
 		
 if __name__ == '__main__':
 	token = loadtokens("tokens.ignore")
-	main(token, "mildlyinteresting")
+	for everything in groups:
+		main(token, everything["subreddit"], everything["group_id"], everything["album_id"])
