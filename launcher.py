@@ -13,12 +13,13 @@ for filename in files:
 		downloaded = requests.get(f"https://raw.githubusercontent.com/{repo}/master/{filename}").text
 
 		if current == downloaded:
-			print(f"{filename} is up to date!")
+			print(f"{filename} is up to date.")
 		else:
-			print(f"{filename} can be updated! Updating!")
+			print(f"{filename} can be updated. Updating...")
 			f.close()
 			f = open(filename, "w")
 			f.write(downloaded)
+			print(f"{filename} was updated.")
 
 		f.close()
 

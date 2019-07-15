@@ -60,8 +60,8 @@ def loadtokens(file):
 	return token
 
 # Main function.
-def main(user_token, subreddit, group_id, album_id):
-	post_time = int(time.time()) + 120 # Adding 120 seconds because i running this script 2 minutes before *:00. My host is very busy doing all tasks at *:00
+def main(user_token, subreddit, group_id, album_id, post_time):
+	print("\n{}\nGroup: {}; Subreddit: {}.".format(time.strftime("[%Y-%m-%e %H:%M:%S]"), group_id, subreddit))
 
 	vk_session = vk_api.VkApi(
 		token=user_token
@@ -115,5 +115,6 @@ def main(user_token, subreddit, group_id, album_id):
 		
 if __name__ == '__main__':
 	token = loadtokens("tokens.ignore")
+	post_time = int(time.time()) + 120 # Adding 120 seconds because i running this script 2 minutes before *:00. My host is very busy doing all tasks at *:00
 	for everything in groups:
-		main(token, everything["subreddit"], everything["group_id"], everything["album_id"])
+		main(token, everything["subreddit"], everything["group_id"], everything["album_id"], post_time)
