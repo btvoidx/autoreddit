@@ -61,7 +61,7 @@ def loadtokens(file):
 
 # Main function.
 def main(user_token, subreddit, group_id, album_id, post_time):
-	print("\n{}\nGroup: {}; Subreddit: {}.".format(time.strftime("[%Y-%m-%e %H:%M:%S]"), group_id, subreddit))
+	print("\n{}\nGroup: {}; Subreddit: {}.\n".format(time.strftime("[%Y-%m-%e %H:%M:%S]"), group_id, subreddit))
 
 	vk_session = vk_api.VkApi(
 		token=user_token
