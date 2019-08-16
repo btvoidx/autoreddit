@@ -5,7 +5,13 @@ import requests
 import time
 
 #   Settings   ##############################################
-groups = [{"subreddit":"mildlyinteresting", "group_id":-180517625, "album_id":261824317}]
+groups = [
+	{
+		"subreddit":"mildlyinteresting", 
+		"group_id":-180517625, 
+		"album_id":261824317
+	}
+]
 
 max_posts = 24
 max_retries = max_posts * 2
@@ -33,12 +39,16 @@ def uploadPhoto(vk, url, group_id, album_id):
 	photo = vk.photos.save(group_id=group_id, album_id=album_id, **meta)[0]
 	return photo
 
-# Make sure script can download image with url.
-def validateURL(url):
-	url = url.replace("://imgur.com", "://i.imgur.com")
-	if url.split(".")[-1] not in ["png", "jpg", "jpeg", "gif"]:
-		url = url + ".png"
-	return url
+# Make sure script can download image/video with url.
+def validateURL(url, media, is_video):
+	if is_video == "true":
+		url = media["reddit_video"]["fallback_url"]
+		return url
+	else:
+		url = url.replace("://imgur.com", "://i.imgur.com")
+		if url.split(".")[-1] not in ["png", "jpg", "jpeg", "gif"]:
+			url = url + ".png"
+		return url
 
 # Repeat given function when fails
 def failproof(failtext, function, **kwargs):
@@ -97,14 +107,18 @@ def main(user_token, subreddit, group_id, album_id, post_time):
 		newurl = failproof(
 			"URL validation failed.",
 			validateURL,
-			url=post["data"]["url"]
+			url=post["data"]["url"], media=post["data"]["media"], is_video=post["data"]["is_video"]
 		)
-		image = failproof(
-			"Failed to upload photo to VK.",
-			uploadPhoto,
-			vk=vk, url=newurl, group_id=abs(group_id), album_id=album_id
-		)
-		image = "photo" + str(group_id) + "_" + str(image["id"])
+
+		if post["data"]["is_video"] == "true":
+			pass
+		else:
+			image = failproof(
+				"Failed to upload photo to VK.",
+				uploadPhoto,
+				vk=vk, url=newurl, group_id=abs(group_id), album_id=album_id
+			)
+			image = "photo" + str(group_id) + "_" + str(image["id"])
 
 	
 		failproof(
