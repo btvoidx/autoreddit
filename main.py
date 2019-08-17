@@ -3,6 +3,7 @@
 import vk_api
 import requests
 import time
+import threading
 
 #   Settings   ##############################################
 groups = [
@@ -33,6 +34,9 @@ headers = {
 	"User-Agent": "Python Automatic posts grabber (by /u/btvoidx)"
 }
 #############################################################
+
+def log(text, logtype):
+	print("[{}] [{}/{}]: {}".format(time.strftime("%H:%M:%S"), threading.current_thread(), logtype, text))
 
 # Uploading photo to VK is very annoying process. Why i just cant add images to post using urls?
 def uploadPhoto(vk, url, group_id, album_id):
@@ -75,7 +79,7 @@ def failproof(failtext, function, **kwargs):
 			current_retries = current_retries + 1
 			if retries > max_retries or current_retries >= 5:
 				return False
-			print(failtext)
+			log(failtext, "WARN")
 			time.sleep(3)
 
 def loadtokens(file):
@@ -84,7 +88,7 @@ def loadtokens(file):
 
 # Main function.
 def main(user_token, subreddit, group_id, album_id, post_time):
-	print("\n{}\nGroup: {}; Subreddit: {}.\n".format(time.strftime("[%Y-%m-%e %H:%M:%S]"), group_id, subreddit))
+	log("Started parsing {} for {}.".format(group_id, subreddit), "TRACE")
 
 	vk_session = vk_api.VkApi(
 		token=user_token
@@ -102,16 +106,16 @@ def main(user_token, subreddit, group_id, album_id, post_time):
 		counter = counter + 1
 		# I don't use here failproof() because script CAN work without printing result. It's not a big problem if it can't.
 		try:
-			print("Post {} of {}:\nSubreddit: {};\nTitle: {};\nFrom: {};\nImage URL: {}.\n".format(
-				counter, max_posts,
-				post["data"]["subreddit"].encode("utf-8"),
-				post["data"]["title"].encode("utf-8"),
-				post["data"]["author"].encode("utf-8"),
-				post["data"]["url"].encode("utf-8")
+			log("Post {} of {}; title: {}; media url: {}; subreddit: {}".format(
+					counter, max_posts,
+					post["data"]["title"].encode("utf-8"),
+					post["data"]["url"].encode("utf-8"),
+					post["data"]["subreddit"].encode("utf-8"),
+				), 
+				"INFO"
 			)
-		)
 		except:
-			print("Can't print result of post {}. Trying to continue.".format(counter))
+			log("Can't print result of post {}. Trying to continue.".format(counter), "WARN")
 
 		message = "{}\n\n/u/{}".format(post["data"]["title"], post["data"]["author"])
 		post_time = post_time + time_between
@@ -149,4 +153,4 @@ if __name__ == '__main__':
 	token = loadtokens("tokens.ignore")
 	post_time = int(time.time()) + 120 # Adding 120 seconds because i running this script 2 minutes before *:00. My host is very busy doing all tasks at *:00
 	for everything in groups:
-		main(token, everything["subreddit"], everything["group_id"], everything["album_id"], post_time)
+		threading.Thread(target=main, args=[token, everything["subreddit"], everything["group_id"], everything["album_id"], post_time]).start()
