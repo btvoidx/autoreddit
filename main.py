@@ -39,6 +39,14 @@ def uploadPhoto(vk, url, group_id, album_id):
 	photo = vk.photos.save(group_id=group_id, album_id=album_id, **meta)[0]
 	return photo
 
+def uploadVideo(vk, url, group_id, title):
+	video = requests.get(url, stream=True)
+	destination = vk.video.save(name=title, group_id=abs(group_id), no_comments=True, repeat=True)
+
+	data = ("video.mp4", video.raw, video.headers['Content-Type'])
+	requests.post(destination['upload_url'], files={'video_file': data}).json()
+	return video
+
 # Make sure script can download image/video with url.
 def validateURL(url, media, is_video):
 	if is_video == True:
@@ -111,20 +119,25 @@ def main(user_token, subreddit, group_id, album_id, post_time):
 		)
 
 		if post["data"]["is_video"] == True:
-			pass
+			video = failproof(
+				"Failed to upload video to VK.",
+				uploadVideo,
+				vk=vk, url=newurl, group_id=abs(group_id), title=post["data"]["title"]
+			)
+			media = "video" + str(group_id) + "_" + str(video["video_id"])
 		else:
 			image = failproof(
 				"Failed to upload photo to VK.",
 				uploadPhoto,
 				vk=vk, url=newurl, group_id=abs(group_id), album_id=album_id
 			)
-			image = "photo" + str(group_id) + "_" + str(image["id"])
+			media = "photo" + str(group_id) + "_" + str(image["id"])
 
 	
 		failproof(
 			"Unable to schedule post. {}".format(message),
 			vk.wall.post,
-			owner_id=group_id, message=message, publish_date=post_time, attachments=image
+			owner_id=group_id, message=message, publish_date=post_time, attachments=media
 		)
 		
 if __name__ == '__main__':
