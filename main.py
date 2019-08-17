@@ -77,8 +77,9 @@ def failproof(failtext, function, **kwargs):
 		except:
 			retries = retries + 1
 			current_retries = current_retries + 1
-			if retries > max_retries or current_retries >= 5:
-				return False
+			if retries > max_retries or current_retries >= 10:
+				log("Hit barrier of maximum fails. Terminating.", "DEATH")
+				return None
 			log(failtext, "WARN")
 			time.sleep(3)
 
