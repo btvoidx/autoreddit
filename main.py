@@ -10,6 +10,11 @@ groups = [
 		"subreddit":"mildlyinteresting", 
 		"group_id":-180517625, 
 		"album_id":261824317
+	},
+	{
+		"subreddit":"mildlyinfuriating", 
+		"group_id":-185565826, 
+		"album_id":267000064
 	}
 ]
 
@@ -21,7 +26,7 @@ time_between = 3600
 #   Persistent vars   #######################################
 retries = 0
 info = {
-	"version": "19.07.15",
+	"version": "19.08.17",
 	"author": "vk.com/btvoidx"
 }
 headers = {
