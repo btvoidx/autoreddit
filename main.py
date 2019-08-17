@@ -41,7 +41,7 @@ def uploadPhoto(vk, url, group_id, album_id):
 
 # Make sure script can download image/video with url.
 def validateURL(url, media, is_video):
-	if is_video == "true":
+	if is_video == True:
 		url = media["reddit_video"]["fallback_url"]
 		return url
 	else:
@@ -110,7 +110,7 @@ def main(user_token, subreddit, group_id, album_id, post_time):
 			url=post["data"]["url"], media=post["data"]["media"], is_video=post["data"]["is_video"]
 		)
 
-		if post["data"]["is_video"] == "true":
+		if post["data"]["is_video"] == True:
 			pass
 		else:
 			image = failproof(
