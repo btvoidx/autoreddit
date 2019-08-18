@@ -36,7 +36,7 @@ headers = {
 #############################################################
 
 def log(text, logtype):
-	print("[{}] [{}/{}]: {}".format(time.strftime("%H:%M:%S"), threading.current_thread(), logtype, text))
+	print("[{}] [{}/{}]: {}".format(time.strftime("%H:%M:%S"), threading.current_thread().name, logtype, text))
 
 # Uploading photo to VK is very annoying process. Why i just cant add images to post using urls?
 def uploadPhoto(vk, url, group_id, album_id):
@@ -89,7 +89,7 @@ def loadtokens(file):
 
 # Main function.
 def main(user_token, subreddit, group_id, album_id, post_time):
-	log("Started parsing {} for {}.".format(group_id, subreddit), "TRACE")
+	log("Started parsing {} for {}.".format(subreddit, group_id), "TRACE")
 
 	vk_session = vk_api.VkApi(
 		token=user_token
@@ -123,21 +123,21 @@ def main(user_token, subreddit, group_id, album_id, post_time):
 
 		
 		newurl = failproof(
-			"URL validation failed.",
+			"URL validation failed. {}".format(post["data"]["url"]),
 			validateURL,
 			url=post["data"]["url"], media=post["data"]["media"], is_video=post["data"]["is_video"]
 		)
 
 		if post["data"]["is_video"] == True:
 			video = failproof(
-				"Failed to upload video to VK.",
+				"Failed to upload video to VK. {}".format(newurl),
 				uploadVideo,
 				vk=vk, url=newurl, group_id=abs(group_id), title=post["data"]["title"]
 			)
 			media = "video" + str(group_id) + "_" + str(video["video_id"])
 		else:
 			image = failproof(
-				"Failed to upload photo to VK.",
+				"Failed to upload photo to VK. {}".format(newurl),
 				uploadPhoto,
 				vk=vk, url=newurl, group_id=abs(group_id), album_id=album_id
 			)
