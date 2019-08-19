@@ -27,7 +27,7 @@ time_between = 3600
 #   Persistent vars   #######################################
 retries = 0
 info = {
-	"version": "19.08.17",
+	"version": "19.08.18",
 	"author": "vk.com/btvoidx"
 }
 headers = {
@@ -54,7 +54,7 @@ def uploadVideo(vk, url, group_id, title):
 
 	data = ("video.mp4", video.raw, video.headers['Content-Type'])
 	requests.post(destination['upload_url'], files={'video_file': data}).json()
-	return video
+	return destination
 
 # Make sure script can download image/video with url.
 def validateURL(url, media, is_video):
