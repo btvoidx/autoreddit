@@ -27,7 +27,7 @@ time_between = 3600
 #   Persistent vars   #######################################
 retries = 0
 info = {
-	"version": "19.08.18",
+	"version": "21.08.18",
 	"author": "vk.com/btvoidx"
 }
 headers = {
@@ -36,7 +36,9 @@ headers = {
 #############################################################
 
 def log(text, logtype):
-	print("[{}] [{}/{}]: {}".format(time.strftime("%H:%M:%S"), threading.current_thread().name, logtype, text))
+	string = "[{}] [{}/{}]: {}".format(time.strftime("%y.%m.%d %H:%M:%S"), threading.current_thread().name, logtype, text)
+	print(string)
+	open("autoreddit.log", "a+").write(string)
 
 # Uploading photo to VK is very annoying process. Why i just cant add images to post using urls?
 def uploadPhoto(vk, url, group_id, album_id):
@@ -78,7 +80,7 @@ def failproof(failtext, function, **kwargs):
 			retries = retries + 1
 			current_retries = current_retries + 1
 			if retries > max_retries or current_retries >= 10:
-				log("Hit barrier of maximum fails. Terminating.", "DEATH")
+				log("Hit barrier of maximum fails. Terminating.", "FATAL")
 				return None
 			log(failtext, "WARN")
 			time.sleep(3)
