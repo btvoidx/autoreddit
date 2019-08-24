@@ -38,7 +38,7 @@ headers = {
 def log(text, logtype):
 	string = "[{}] [{}/{}]: {}".format(time.strftime("%y.%m.%d %H:%M:%S"), threading.current_thread().name, logtype, text)
 	print(string)
-	open("autoreddit.log", "a+").write(string)
+	open("autoreddit.log", "a+").write(string + "\n")
 
 # Uploading photo to VK is very annoying process. Why i just cant add images to post using urls?
 def uploadPhoto(vk, url, group_id, album_id):
