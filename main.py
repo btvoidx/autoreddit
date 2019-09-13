@@ -27,7 +27,7 @@ time_between = 3600
 #   Persistent vars   #######################################
 retries = 0
 info = {
-	"version": "21.08.18",
+	"version": "21.08.19",
 	"author": "vk.com/btvoidx"
 }
 headers = {
