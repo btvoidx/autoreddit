@@ -19,9 +19,9 @@ def random_id(): #Random number for random_id
 def loadtokens():
 	return os.environ["group-token"]
 
-def main(user_token):
+def main(token):
 	vk_session = vk_api.VkApi(
-		token=user_token
+		token=token
 	)
 	vk = vk_session.get_api()
 
@@ -30,7 +30,7 @@ def main(user_token):
 	#		pass
 	#	except Exception as e:
 	#		print(f"Shit happened: {e}")
-	log("So this worked properly", "TRACE")
+	log(f"{token}", "TRACE")
 
 if __name__ == '__main__':
 	token = loadtokens()
