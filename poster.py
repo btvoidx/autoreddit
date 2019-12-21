@@ -85,9 +85,8 @@ def failproof(failtext, function, **kwargs):
 			log(failtext, "WARN")
 			time.sleep(3)
 
-def loadtokens(file):
-	token = open(file).read()
-	return token
+def loadtokens():
+	return os.environ["group-token"]
 
 # Main function.
 def main(user_token, subreddit, group_id, album_id, post_time):
@@ -153,7 +152,7 @@ def main(user_token, subreddit, group_id, album_id, post_time):
 		)
 		
 if __name__ == '__main__':
-	token = loadtokens("tokens.ignore")
-	post_time = int(time.time()) + 120 # Adding 120 seconds because i running this script 2 minutes before *:00. My host is very busy doing all tasks at *:00
+	token = loadtokens()
+	post_time = int(time.time())
 	for everything in groups:
 		threading.Thread(target=main, args=[token, everything["subreddit"], everything["group_id"], everything["album_id"], post_time]).start()

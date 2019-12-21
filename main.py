@@ -17,7 +17,7 @@ def random_id(): #Random number for random_id
 	return randint(0, 9223372036854775807)
 
 def loadtokens():
-	return os.environ["token"]
+	return os.environ["group-token"]
 
 def main(user_token):
 	vk_session = vk_api.VkApi(
