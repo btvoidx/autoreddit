@@ -63,7 +63,7 @@ def main(token):
 				if event.type == VkBotEventType.WALL_POST_NEW:
 					print(event.obj.text)
 					if event.obj.text.split("\n")[-1][0:2] == "/u/": # Verifying that this is legit auto-post
-						tr = translator.translate(text=event.obj.text, dest="ru", src="en").text
+						tr = translator.translate(text=event.obj.text.split("\n")[0], dest="ru", src="en").text
 						message = f"Примерный перевод с помощью Google Translate:\n{tr}"
 						vk.wall.createComment(owner_id=event.obj.owner_id, post_id=event.obj.id, message=message)
 						log(f"New post just got translated. Post id: {event.obj.id}", "TRACE")
