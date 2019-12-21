@@ -16,7 +16,7 @@ def random_id(): #Random number for random_id
 	return randint(0, 9223372036854775807)
 
 def loadtokens(file):
-	return open(file, "r").read()
+	return os.environ["token"]
 
 def main(user_token):
 	vk_session = vk_api.VkApi(
@@ -32,5 +32,5 @@ def main(user_token):
 	log("So this worked properly", "TRACE")
 
 if __name__ == '__main__':
-	token = loadtokens("tokens.ignore")
+	token = loadtokens()
 	threading.Thread(target=main, args=[token]).start()
