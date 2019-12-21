@@ -4,6 +4,7 @@ import vk_api
 import requests
 import time
 import threading
+import os
 
 #   Settings   ##############################################
 groups = [
