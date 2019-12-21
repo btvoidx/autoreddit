@@ -152,6 +152,6 @@ def main(user_token, subreddit, group_id, album_id, post_time):
 		
 if __name__ == '__main__':
 	token = loadtokens()
-	post_time = int(time.time())
+	post_time = int(time.time()) + 1800
 	for everything in groups:
 		threading.Thread(target=main, args=[token, everything["subreddit"], everything["group_id"], everything["album_id"], post_time]).start()
