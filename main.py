@@ -9,6 +9,9 @@ import os
 from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
 from random import randint
 
+from googletrans import Translator
+translator = Translator()
+
 events = []
 
 def log(text, logtype):
@@ -58,7 +61,10 @@ def main(token):
 			for event in events: # Parsing through every event
 				torem.append(event)
 				if event.type == VkBotEventType.WALL_POST_NEW:
-					vk.wall.createComment(owner_id=event.obj.owner_id, post_id=event.obj.id, message="yay")
+					if event.obj.text.split("\n")[-1][0:2] == "/u/": # Verifying that this is legit auto-post
+						tr = translator.translate(text=event.obj.text, dest="ru", src="en").text
+						message = f"Примерный перевод с помощью Google Translate:\n{tr}"
+						vk.wall.createComment(owner_id=event.obj.owner_id, post_id=event.obj.id, message=message)
 
 		except Exception as e:
 			log(f"Shit happened: {e}", "ERROR")
