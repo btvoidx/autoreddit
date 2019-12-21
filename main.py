@@ -9,6 +9,8 @@ import os
 from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
 from random import randint
 
+events = []
+
 def log(text, logtype):
 	string = "[{}/{}]: {}".format(threading.current_thread().name, logtype, text)
 	print(string)
@@ -46,6 +48,8 @@ def main(token):
 	)
 	vk = vk_session.get_api()
 
+	torem = []
+	
 	while True:
 		try:
 			for e in torem:
