@@ -1,6 +1,3 @@
-#Very secret files that contains very secret information (VK access tokens in my case)
-*.ignore
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
