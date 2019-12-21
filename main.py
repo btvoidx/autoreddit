@@ -57,7 +57,8 @@ def main(token):
 			torem = []
 			for event in events: # Parsing through every event
 				torem.append(event)
-				print(event)
+				if event.type == VkBotEventType.WALL_POST_NEW:
+					vk.wall.createComment(owner_id=event.obj.owner_id, post_id=event.obj.id, message="yay")
 
 		except Exception as e:
 			log(f"Shit happened: {e}", "ERROR")
