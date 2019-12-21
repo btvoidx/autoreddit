@@ -47,9 +47,9 @@ def main(token):
 		token=token
 	)
 	vk = vk_session.get_api()
-
+	threading.Thread(target=eventloop, args=[vk_session]).start()
 	torem = []
-	
+
 	while True:
 		try:
 			for e in torem:
@@ -60,7 +60,7 @@ def main(token):
 				print(event)
 
 		except Exception as e:
-			print(f"Shit happened: {e}")
+			log(f"Shit happened: {e}", "ERROR")
 
 if __name__ == '__main__':
 	token = loadtokens()
