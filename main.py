@@ -15,7 +15,7 @@ def log(text, logtype):
 def random_id(): #Random number for random_id
 	return randint(0, 9223372036854775807)
 
-def loadtokens(file):
+def loadtokens():
 	return os.environ["token"]
 
 def main(user_token):
