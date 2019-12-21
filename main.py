@@ -65,6 +65,7 @@ def main(token):
 						tr = translator.translate(text=event.obj.text, dest="ru", src="en").text
 						message = f"Примерный перевод с помощью Google Translate:\n{tr}"
 						vk.wall.createComment(owner_id=event.obj.owner_id, post_id=event.obj.id, message=message)
+						log(f"New post just got translated. Post id: {event.obj.id}", "TRACE")
 
 		except Exception as e:
 			log(f"Shit happened: {e}", "ERROR")
