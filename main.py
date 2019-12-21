@@ -31,7 +31,7 @@ def failsafe(function, contin=False, *args):
 def eventloop(vk_session):
 	while True:
 		try:
-			longpoll = VkBotLongPoll(vk_session, "178327076")
+			longpoll = VkBotLongPoll(vk_session, "180517625")
 			log("Connected to longpoll", "TRACE")
 		except:
 			continue
