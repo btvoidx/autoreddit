@@ -61,8 +61,8 @@ def main(token):
 						# ^ Here I can do something later
 						log(f"New auto-post detected with id {event.obj.id}.", "TRACE")
 
-					if event.obj.marked_as_ads == False:
-						log(f"Ad-post {event.obj.id}", "DEBUG")
+					if event.obj.marked_as_ads == 0:
+						log(f"Ad-free post {event.obj.id}", "DEBUG")
 						#for conversation in 
 
 		except Exception as e:
