@@ -10,7 +10,7 @@ from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
 from random import randint
 
 from googletrans import Translator
-translator = Translator(service_urls=["translate.google.com", "translate.google.ru"])
+translator = Translator(service_urls=["translate.google.com"])
 
 events = []
 
