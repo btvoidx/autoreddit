@@ -62,8 +62,9 @@ def main(token):
 						log(f"New auto-post detected with id {event.obj.id}.", "TRACE")
 
 					if event.obj.marked_as_ads == 0: # If post is ad-free
-						for peer_id in [187569882, 2000000001]:
-							vk.messages.send(peer_id=peer_id, random_id=random_id(), message="hey", attachment=f"wall{event.obj.owner_id}_{event.obj.id}")
+						for peer_id in [2000000001]:
+							message = localization.new_post + localization.mailing_notification
+							vk.messages.send(peer_id=peer_id, random_id=random_id(), message=message, attachment=f"wall{event.obj.owner_id}_{event.obj.id}")
 
 
 		except Exception as e:
