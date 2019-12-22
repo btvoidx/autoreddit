@@ -61,7 +61,7 @@ def main(token):
 					if event.obj.text.split("\n")[-1][0:3] == "/u/": # If this is an automatic publication
 						is_auto = True
 
-					if event.obj.marked_as_ads == 0: # If post is ad-free
+					if event.obj.marked_as_ads == 1: # If post is marked as ad
 						is_ad = True
 
 					if not is_auto and not is_ad: # Mail about this post if it ad-free and not automatic.
