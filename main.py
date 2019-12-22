@@ -9,20 +9,15 @@ import os
 from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
 from random import randint
 
+from mildlylib import *
+
 #from googletrans import Translator
 #translator = Translator(service_urls=["translate.google.com"])
 
 events = []
 
-def log(text, logtype):
-	string = "[{}/{}]: {}".format(threading.current_thread().name, logtype, text)
-	print(string)
-
 def random_id(): #Random number for random_id
 	return randint(0, 9223372036854775807)
-
-def loadtokens():
-	return os.environ["group-token"]
 
 def failsafe(function, contin=False, *args):
 	while contin:
@@ -43,7 +38,7 @@ def eventloop(vk_session):
 			for event in longpoll.listen():
 				events.append(event)
 		except Exception as e:
-			log(f"An error occurred: {e}", "ERROR")
+			log(f"An error occurred: {e}.", "ERROR")
 
 def main(token):
 	vk_session = vk_api.VkApi(
@@ -61,15 +56,18 @@ def main(token):
 			for event in events: # Parsing through every event
 				torem.append(event)
 				if event.type == VkBotEventType.WALL_POST_NEW:
-					if False: #event.obj.text.split("\n")[-1][0:3] == "/u/": # Verifying that this is legit auto-post
-						tr = translator.translate(text=event.obj.text.split("\n")[0], dest="ru", src="en").text
-						message = f"Примерный перевод с помощью Google Translate:\n{tr}"
-						vk.wall.createComment(owner_id=event.obj.owner_id, post_id=event.obj.id, message=message)
-						log(f"New post just got translated. Post id: {event.obj.id}", "TRACE")
+					if event.obj.text.split("\n")[-1][0:3] == "/u/": # If this is an automatic publication
+						#vk.wall.createComment(owner_id=event.obj.owner_id, post_id=event.obj.id, message=message)
+						# ^ Here I can do something later
+						log(f"New auto-post detected with id {event.obj.id}.", "TRACE")
+
+					if event.obj.marked_as_ads == False:
+						log(f"Ad-post {event.obj.id}", "DEBUG")
+						#for conversation in 
 
 		except Exception as e:
 			log(f"Shit happened: {e}", "ERROR")
 
 if __name__ == '__main__':
-	token = loadtokens()
+	token = os.environ["group-token"]
 	threading.Thread(target=main, args=[token]).start()

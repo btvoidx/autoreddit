@@ -36,10 +36,6 @@ headers = {
 }
 #############################################################
 
-def log(text, logtype):
-	string = "[{}/{}]: {}".format(threading.current_thread().name, logtype, text)
-	print(string)
-
 # Uploading photo to VK is very annoying process. Why i just cant add images to post using urls?
 def uploadPhoto(vk, url, group_id, album_id):
 	destination = vk.photos.getUploadServer(album_id=album_id, group_id=abs(group_id))
@@ -84,9 +80,6 @@ def failproof(failtext, function, **kwargs):
 				return None
 			log(failtext, "WARN")
 			time.sleep(3)
-
-def loadtokens():
-	return os.environ["user-token"]
 
 # Main function.
 def main(user_token, subreddit, group_id, album_id, post_time):
@@ -152,7 +145,7 @@ def main(user_token, subreddit, group_id, album_id, post_time):
 		)
 		
 if __name__ == '__main__':
-	token = loadtokens()
+	token = os.environ["user-token"]
 	post_time = int(time.time()) + 1800
 	for everything in groups:
 		threading.Thread(target=main, args=[token, everything["subreddit"], everything["group_id"], everything["album_id"], post_time]).start()
