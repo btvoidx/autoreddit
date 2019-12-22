@@ -56,12 +56,15 @@ def main(token):
 			for event in events: # Parsing through every event
 				torem.append(event)
 				if event.type == VkBotEventType.WALL_POST_NEW:
+					is_auto = False
+					is_ad = False
 					if event.obj.text.split("\n")[-1][0:3] == "/u/": # If this is an automatic publication
-						#vk.wall.createComment(owner_id=event.obj.owner_id, post_id=event.obj.id, message=message)
-						# ^ Here I can do something later
-						log(f"New auto-post detected with id {event.obj.id}.", "TRACE")
+						is_auto = True
 
 					if event.obj.marked_as_ads == 0: # If post is ad-free
+						is_ad = True
+
+					if not is_auto and not is_ad: # Mail about this post if it ad-free and not automatic.
 						for peer_id in [2000000001]:
 							message = localization.new_post + localization.mailing_notification
 							vk.messages.send(peer_id=peer_id, random_id=random_id(), message=message, attachment=f"wall{event.obj.owner_id}_{event.obj.id}")

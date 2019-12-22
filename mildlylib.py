@@ -5,5 +5,5 @@ def log(text, logtype):
 	print(string)
 
 class localization:
-	new_post = "В группе появился новый пост."
+	new_post = "В группе новая запись."
 	mailing_notification = "\n\n(Чтобы отписаться от рассылки напишите !отписаться)"
