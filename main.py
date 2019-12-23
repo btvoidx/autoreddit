@@ -66,14 +66,18 @@ def main(token):
 
 
 					if not is_ad: # If ad-free
-						for entry in col.find({"mailing_level": 3},{}):
+						mlist = col.find({"mailing_level": 3},{})
+						for entry in mlist:
 							message = localization.new_post + "\n\n" + localization.mailing_notification
 							vk.messages.send(peer_id=entry["_id"], random_id=random_id(), message=message, attachment=f"wall{event.obj.owner_id}_{event.obj.id}")
+						log(f"Sent {len(mlist)} message(s) to level 3 mail.")
 
 					elif not is_ad and not is_auto: # If ad-free and not automatic
-						for entry in col.find({"mailing_level": 2},{}):
+						mlist = col.find({"mailing_level": 2},{})
+						for entry in mlist:
 							message = localization.new_post + "\n\n" + localization.mailing_notification
 							vk.messages.send(peer_id=entry["_id"], random_id=random_id(), message=message, attachment=f"wall{event.obj.owner_id}_{event.obj.id}")
+						log(f"Sent {len(mlist)} message(s) to level 2 mail.")
 
 				if event.type == VkBotEventType.MESSAGE_NEW:
 					if event.obj.text != "":
@@ -114,17 +118,17 @@ def main(token):
 										message = message + f"{localization.mailing_level_2}"
 									elif DB["mailing_level"] == 3:
 										message = message + f"{localization.mailing_level_3}"
-									message = message + f"\n{localization.mailing_level_howtochange}"
+									message = message + f"\n\n{localization.mailing_level_howtochange}"
 
 								elif subcommand in ["0", "1", "2", "3"]:
 									message = f"{localization.mailing_level_changed}\n{localization.now} "
-									if subcommand == 0:
+									if subcommand == "0":
 										message = message + f"{localization.mailing_level_0}"
-									elif subcommand == 1:
+									elif subcommand == "1":
 										message = message + f"{localization.mailing_level_1}"
-									elif subcommand == 2:
+									elif subcommand == "2":
 										message = message + f"{localization.mailing_level_2}"
-									elif subcommand == 3:
+									elif subcommand == "3":
 										message = message + f"{localization.mailing_level_3}"
 									col.update_one({"_id": event.obj.peer_id}, {"$set":{"mailing_level":int(subcommand)}})
 
