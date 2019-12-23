@@ -43,7 +43,7 @@ def mail(list):
 	for entry in list:
 		mlen = mlen + 1
 		message = localization.new_post
-		if entry["hide_notification"] == False:
+		if entry["hide_notification"] == 0:
 			message = message + f"\n{localization.mailing_notification}"
 		vk.messages.send(peer_id=entry["_id"], random_id=random_id(), message=message, attachment=f"wall{event.obj.owner_id}_{event.obj.id}")
 
@@ -117,7 +117,7 @@ def main(token):
 							DB = {
 								"_id": event.obj.peer_id, 
 								"mailing_level": 0,
-								"hide_notification": False
+								"hide_notification": 0
 								}
 							col.insert_one(DB)
 							log("New document was created", "DB")
