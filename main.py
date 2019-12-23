@@ -41,6 +41,7 @@ def eventloop(vk_session):
 def mail(list):
 	mlen = 0
 	for entry in list:
+		print(entry)
 		mlen = mlen + 1
 		message = localization.new_post
 		if entry["hide_notification"] == 0:
