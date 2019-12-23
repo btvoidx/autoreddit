@@ -14,11 +14,6 @@ groups = [
 		"subreddit":"mildlyinteresting", 
 		"group_id":-180517625, 
 		"album_id":261824317
-	},
-	{
-		"subreddit":"mildlyinfuriating", 
-		"group_id":-185565826, 
-		"album_id":267000064
 	}
 ]
 
