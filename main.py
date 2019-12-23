@@ -38,10 +38,9 @@ def eventloop(vk_session):
 		except Exception as e:
 			log(f"An error occurred: {e}.", "ERROR")
 
-def mail(list):
+def sendmail(vk, list):
 	mlen = 0
 	for entry in list:
-		print(entry)
 		mlen = mlen + 1
 		message = localization.new_post
 		if entry["hide_notification"] == 0:
@@ -77,11 +76,11 @@ def main(token):
 
 
 					if not is_ad and not is_auto: # If ad-free and not automatic
-						mlen = mail(col.find({"mailing_level": 2},{"mailing_level":0}))
+						mlen = sendmail(vk, col.find({"mailing_level": 2},{"hide_notification":1}))
 						log(f"Sent {mlen} message(s) to level 2 mail.", "MAIL")
 
 					if not is_ad: # If ad-free
-						mlen = mail(col.find({"mailing_level": 3},{"mailing_level":0}))
+						mlen = sendmail(vk, col.find({"mailing_level": 3},{"hide_notification":1}))
 						log(f"Sent {mlen} message(s) to level 3 mail.", "MAIL")
 
 				if event.type == VkBotEventType.MESSAGE_NEW:
