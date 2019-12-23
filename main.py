@@ -85,6 +85,14 @@ def main(token):
 						log(f"New message: {event.obj.text}", "MSG")
 						text = event.obj.text.lower()
 						words = text.split()
+						admins = []
+
+						if event.from_chat:
+							for user in vk.messages.getConversationMembers(peer_id=event.obj.peer_id)["items"]:
+								if "is_admin" in user and user["is_admin"] == True:
+									admins.append(user["member_id"])
+						else:
+							admins.append(event.obj.from_id)
 
 						if words[0][0] in ["/", "!", "."]: # Removing forced command prefix 
 							command = words[0][1:]
@@ -107,7 +115,10 @@ def main(token):
 							col.insert_one(DB)
 							log("New document was created", "DB")
 
-						if command in ["рассылка"]: # Commands
+						if command in [""]: # User Commands
+							pass # Placeholder
+
+						elif command in ["рассылка"] and event.obj.from_id in admins: # Admin Commands / DM commands
 							if command == "рассылка":
 								if subcommand == "":
 									message = f"{localization.mailing_level_current}\n"
@@ -142,6 +153,12 @@ def main(token):
 							if not event.from_chat:
 								message = f"{localization.invalid_command}"
 								vk.messages.send(peer_id=event.obj.peer_id, random_id=random_id(), message=message)
+
+				if event.type == VkBotEventType.MESSAGE_DENY:
+					DB = col.find_one({"_id": event.obj.user_id},{"_id": 0})
+					if DB != None: # If user_id was found in DB
+						col.update_one({"_id": event.obj.user_id}, {"$set":{"mailing_level":0}})
+
 
 		except Exception as e:
 			log(f"Shit happened: {e}", "ERROR")
