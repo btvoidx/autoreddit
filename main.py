@@ -38,6 +38,17 @@ def eventloop(vk_session):
 		except Exception as e:
 			log(f"An error occurred: {e}.", "ERROR")
 
+def mail(list):
+	mlen = 0
+	for entry in list:
+		mlen = mlen + 1
+		message = localization.new_post
+		if entry["hide_notification"] == False:
+			message = message + f"\n{localization.mailing_notification}"
+		vk.messages.send(peer_id=entry["_id"], random_id=random_id(), message=message, attachment=f"wall{event.obj.owner_id}_{event.obj.id}")
+
+	return mlen
+
 def main(token):
 	vk_session = vk_api.VkApi(
 		token=token
@@ -65,19 +76,11 @@ def main(token):
 
 
 					if not is_ad and not is_auto: # If ad-free and not automatic
-						mlist, mlen = col.find({"mailing_level": 2},{}), 0
-						for entry in mlist:
-							mlen = mlen + 1
-							message = localization.new_post + "\n\n" + localization.mailing_notification
-							vk.messages.send(peer_id=entry["_id"], random_id=random_id(), message=message, attachment=f"wall{event.obj.owner_id}_{event.obj.id}")
+						mlen = mail(col.find({"mailing_level": 2},{}))
 						log(f"Sent {mlen} message(s) to level 2 mail.", "MAIL")
 
 					if not is_ad: # If ad-free
-						mlist, mlen = col.find({"mailing_level": 3},{}), 0
-						for entry in mlist:
-							mlen = mlen + 1
-							message = localization.new_post + "\n\n" + localization.mailing_notification
-							vk.messages.send(peer_id=entry["_id"], random_id=random_id(), message=message, attachment=f"wall{event.obj.owner_id}_{event.obj.id}")
+						mlen = mail(col.find({"mailing_level": 3},{}))
 						log(f"Sent {mlen} message(s) to level 3 mail.", "MAIL")
 
 				if event.type == VkBotEventType.MESSAGE_NEW:
@@ -111,7 +114,11 @@ def main(token):
 
 						DB = col.find_one({"_id": event.obj.peer_id},{"_id": 0})
 						if DB == None: # If peer_id not in DB, create it
-							DB = {"_id": event.obj.peer_id, "mailing_level": 0}
+							DB = {
+								"_id": event.obj.peer_id, 
+								"mailing_level": 0,
+								"hide_notification": False
+								}
 							col.insert_one(DB)
 							log("New document was created", "DB")
 
