@@ -70,7 +70,7 @@ def main(token):
 							mlen = mlen + 1
 							message = localization.new_post + "\n\n" + localization.mailing_notification
 							vk.messages.send(peer_id=entry["_id"], random_id=random_id(), message=message, attachment=f"wall{event.obj.owner_id}_{event.obj.id}")
-						log(f"Sent {mlen} message(s) to level 2 mail.")
+						log(f"Sent {mlen} message(s) to level 2 mail.", "MAIL")
 
 					if not is_ad: # If ad-free
 						mlist, mlen = col.find({"mailing_level": 3},{}), 0
@@ -78,7 +78,7 @@ def main(token):
 							mlen = mlen + 1
 							message = localization.new_post + "\n\n" + localization.mailing_notification
 							vk.messages.send(peer_id=entry["_id"], random_id=random_id(), message=message, attachment=f"wall{event.obj.owner_id}_{event.obj.id}")
-						log(f"Sent {mlen} message(s) to level 3 mail.")
+						log(f"Sent {mlen} message(s) to level 3 mail.", "MAIL")
 
 				if event.type == VkBotEventType.MESSAGE_NEW:
 					if event.obj.text != "":
