@@ -44,7 +44,7 @@ def sendmail(vk, event, list):
 		mlen = mlen + 1
 		message = localization.new_post
 		if entry["hide_notification"] == 0:
-			message = message + f"\n{localization.mailing_notification}"
+			message = message + f"\n\n{localization.mailing_notification}"
 		vk.messages.send(peer_id=entry["_id"], random_id=random_id(), message=message, attachment=f"wall{event.obj.owner_id}_{event.obj.id}")
 
 	return mlen
