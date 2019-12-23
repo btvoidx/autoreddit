@@ -77,11 +77,11 @@ def main(token):
 
 
 					if not is_ad and not is_auto: # If ad-free and not automatic
-						mlen = mail(col.find({"mailing_level": 2},{}))
+						mlen = mail(col.find({"mailing_level": 2},{"mailing_level":0}))
 						log(f"Sent {mlen} message(s) to level 2 mail.", "MAIL")
 
 					if not is_ad: # If ad-free
-						mlen = mail(col.find({"mailing_level": 3},{}))
+						mlen = mail(col.find({"mailing_level": 3},{"mailing_level":0}))
 						log(f"Sent {mlen} message(s) to level 3 mail.", "MAIL")
 
 				if event.type == VkBotEventType.MESSAGE_NEW:
