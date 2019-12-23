@@ -64,6 +64,12 @@ def main(token):
 						is_ad = True
 
 
+					if not is_ad and not is_auto: # If ad-free and not automatic
+						mlist = col.find({"mailing_level": 2},{})
+						for entry in mlist:
+							message = localization.new_post + "\n\n" + localization.mailing_notification
+							vk.messages.send(peer_id=entry["_id"], random_id=random_id(), message=message, attachment=f"wall{event.obj.owner_id}_{event.obj.id}")
+						log(f"Sent {len(mlist)} message(s) to level 2 mail.")
 
 					if not is_ad: # If ad-free
 						mlist = col.find({"mailing_level": 3},{})
@@ -71,13 +77,6 @@ def main(token):
 							message = localization.new_post + "\n\n" + localization.mailing_notification
 							vk.messages.send(peer_id=entry["_id"], random_id=random_id(), message=message, attachment=f"wall{event.obj.owner_id}_{event.obj.id}")
 						log(f"Sent {len(mlist)} message(s) to level 3 mail.")
-
-					elif not is_ad and not is_auto: # If ad-free and not automatic
-						mlist = col.find({"mailing_level": 2},{})
-						for entry in mlist:
-							message = localization.new_post + "\n\n" + localization.mailing_notification
-							vk.messages.send(peer_id=entry["_id"], random_id=random_id(), message=message, attachment=f"wall{event.obj.owner_id}_{event.obj.id}")
-						log(f"Sent {len(mlist)} message(s) to level 2 mail.")
 
 				if event.type == VkBotEventType.MESSAGE_NEW:
 					if event.obj.text != "":
