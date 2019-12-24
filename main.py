@@ -44,7 +44,7 @@ def sendmail(vk, event, list):
 	for entry in list:
 		mlen = mlen + 1
 		message = localization.new_post
-		if entry["hide_notification"] == 0 and entry["last_notification"] <= int(time.time()) + 259200: # If notification is not hidden and wasn't shown for 3 days
+		if entry["hide_notification"] == 0 and entry["last_notification"] >= int(time.time()) + 259200: # If notification is not hidden and wasn't shown for 3 days
 			message = message + f"\n\n{localization.mailing_notification}"
 			sent_to.append(entry["_id"])
 		vk.messages.send(peer_id=entry["_id"], random_id=random_id(), message=message, attachment=f"wall{event.obj.owner_id}_{event.obj.id}")
