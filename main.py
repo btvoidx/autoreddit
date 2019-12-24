@@ -78,13 +78,13 @@ def main(token):
 
 
 					if not is_ad and not is_auto: # If ad-free and not automatic
-						mlen, sent_to = sendmail(vk, event, col.find({"mailing_level": 2},{"hide_notification":1}))
+						mlen, sent_to = sendmail(vk, event, col.find({"mailing_level": 2}))
 						for user_id in sent_to:
 							col.update_one({"_id": user_id}, {"$set":{"last_notification": int(time.time)}})
 						log(f"Sent {mlen} message(s) to level 2 mail.", "MAIL")
 
 					if not is_ad: # If ad-free
-						mlen, sent_to = sendmail(vk, event, col.find({"mailing_level": 3},{"hide_notification":1}))
+						mlen, sent_to = sendmail(vk, event, col.find({"mailing_level": 3}))
 						for user_id in sent_to:
 							col.update_one({"_id": user_id}, {"$set":{"last_notification": int(time.time)}})
 						log(f"Sent {mlen} message(s) to level 3 mail.", "MAIL")
