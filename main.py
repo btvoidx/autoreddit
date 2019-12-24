@@ -144,7 +144,7 @@ def main(token):
 										message = message + f"{localization.mailing_level_2}"
 									elif DB["mailing_level"] == 3:
 										message = message + f"{localization.mailing_level_3}"
-									message = message + f"\n\n{localization.mailing_level_howtochange}"
+									message = message + f"\n\n{localization.mailing_level_howtochange}\n\n{localization.mailing_level_valid}\n0 - {localization.mailing_level_0}\n1 - {localization.mailing_level_1}\n2 - {localization.mailing_level_2}\n 3 - {localization.mailing_level_3}"
 
 								elif subcommand in ["0", "1", "2", "3"]:
 									message = f"{localization.mailing_level_changed}\n{localization.now} "
