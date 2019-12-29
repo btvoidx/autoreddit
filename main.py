@@ -51,7 +51,7 @@ def sendmail(vk, event, list):
 			sent_to.append(entry["_id"])
 			mlen = mlen + 1
 		except Exception as e:
-			log(f"Couldn't sent main to {entry["_id"]} because {e}", "ERROR")
+			log(f"Could not send mail: {e}", "ERROR")
 
 	return mlen, sent_to
 
