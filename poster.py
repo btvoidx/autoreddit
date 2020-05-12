@@ -40,8 +40,7 @@ def uploadPhoto(vk, url, group_id, album_id):
 	image = requests.get(url, stream=True)
 	data = ("image.jpg", image.raw, image.headers['Content-Type'])
 	meta = requests.post(destination['upload_url'], files={'photo': data}).json()
-	photo = vk.photos.save(group_id=group_id, album_id=album_id, **meta)[0]
-	return photo
+	return vk.photos.save(group_id=group_id, album_id=album_id, **meta)[0]
 
 def uploadVideo(vk, url, group_id, title):
 	video = requests.get(url, stream=True)
@@ -55,12 +54,12 @@ def uploadVideo(vk, url, group_id, title):
 def validateURL(url, media, is_video):
 	if is_video == True:
 		url = media["reddit_video"]["fallback_url"]
-		return url
 	else:
 		url = url.replace("://imgur.com", "://i.imgur.com")
 		if url.split(".")[-1] not in ["png", "jpg", "jpeg", "gif"]:
 			url = url + ".png"
-		return url
+
+	return url
 
 # Repeat given function when fails
 def failproof(failtext, function, **kwargs):
@@ -71,7 +70,7 @@ def failproof(failtext, function, **kwargs):
 			return function(**kwargs)
 		except:
 			retries = retries + 1
-			current_retries = current_retries + 1
+			current_retries += 1
 			if retries > max_retries or current_retries >= 10:
 				log("Hit barrier of maximum fails. Terminating.", "FATAL")
 				return None
@@ -95,7 +94,7 @@ def main(user_token, subreddit, group_id, album_id, post_time):
 
 	counter = 0
 	for post in r.json()["data"]["children"]:
-		counter = counter + 1
+		counter += 1
 		# I don't use here failproof() because script CAN work without printing result. It's not a big problem if it can't.
 		try:
 			log("Post {} of {}; title: {}; media url: {}; subreddit: {}".format(
@@ -112,7 +111,7 @@ def main(user_token, subreddit, group_id, album_id, post_time):
 		message = "{}\n\n/u/{}".format(post["data"]["title"], post["data"]["author"])
 		post_time = post_time + time_between
 
-		
+
 		newurl = failproof(
 			"URL validation failed. {}".format(post["data"]["url"]),
 			validateURL,
@@ -134,7 +133,7 @@ def main(user_token, subreddit, group_id, album_id, post_time):
 			)
 			media = "photo" + str(group_id) + "_" + str(image["id"])
 
-	
+
 		failproof(
 			"Unable to schedule post. {}".format(message),
 			vk.wall.post,

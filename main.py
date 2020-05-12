@@ -42,7 +42,7 @@ def sendmail(vk, event, list):
 	mlen = 0
 	sent_to = []
 	for entry in list:
-		mlen = mlen + 1
+		mlen += 1
 		message = localization.new_post
 		if entry["hide_notification"] == 0 and entry["last_notification"] <= int(time.time()) - 259200: # If notification is not hidden and wasn't shown for 3 days
 			message = message + f"\n\n{localization.mailing_notification}"
