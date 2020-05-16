@@ -11,8 +11,8 @@ from mildlylib import *
 #   Settings   ##############################################
 groups = [
 	{
-		"subreddit":"mildlyinteresting", 
-		"group_id":-180517625, 
+		"subreddit":"mildlyinteresting",
+		"group_id":-180517625,
 		"album_id":261824317
 	}
 ]
@@ -103,7 +103,7 @@ def main(user_token, subreddit, group_id, album_id, post_time):
 					post["data"]["title"].encode("utf-8"),
 					post["data"]["url"].encode("utf-8"),
 					post["data"]["subreddit"].encode("utf-8"),
-				), 
+				),
 				"INFO"
 			)
 		except:
@@ -112,7 +112,7 @@ def main(user_token, subreddit, group_id, album_id, post_time):
 		message = "{}\n\n/u/{}".format(post["data"]["title"], post["data"]["author"])
 		post_time = post_time + time_between
 
-		
+
 		newurl = failproof(
 			"URL validation failed. {}".format(post["data"]["url"]),
 			validateURL,
@@ -134,13 +134,13 @@ def main(user_token, subreddit, group_id, album_id, post_time):
 			)
 			media = "photo" + str(group_id) + "_" + str(image["id"])
 
-	
+
 		failproof(
 			"Unable to schedule post. {}".format(message),
 			vk.wall.post,
 			owner_id=group_id, message=message, publish_date=post_time, attachments=media
 		)
-		
+
 if __name__ == '__main__':
 	token = os.environ["user-token"]
 	post_time = int(time.time()) + 1800
