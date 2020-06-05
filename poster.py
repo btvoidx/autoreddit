@@ -11,9 +11,8 @@ from mildlylib import *
 #   Settings   ##############################################
 groups = [
 	{
-		"subreddit":"mildlyinteresting", 
-		"group_id":-180517625, 
-		"album_id":261824317
+		"subreddit": "mildlyinteresting",
+		"group_id": -180517625
 	}
 ]
 
@@ -78,7 +77,7 @@ def failproof(failtext, function, **kwargs):
 			time.sleep(3)
 
 # Main function.
-def main(user_token, subreddit, group_id, album_id, post_time):
+def main(user_token, subreddit, group_id, post_time):
 	log("Started parsing {} for {}.".format(subreddit, group_id), "TRACE")
 
 	vk_session = vk_api.VkApi(
@@ -92,6 +91,13 @@ def main(user_token, subreddit, group_id, album_id, post_time):
 		url="https://www.reddit.com/r/{}/top.json?sort=hot&limit={}&raw_json=1".format(subreddit, max_posts), headers=headers
 	)
 
+	album = vk.photos.getAlbums(owner_id = group_id, count = 1)["items"][0]
+	if album["size"] > 9950:
+		n = int(album["title"].split(" ")[-1]) + 1
+		album = vk.photos.createAlbum(title = f"Chapter {n}", group_id = abs(group_id), comments_disabled = True, upload_by_admins_only = True)
+
+	album_id = album["id"]
+
 	counter = 0
 	for post in r.json()["data"]["children"]:
 		counter += 1
@@ -102,7 +108,7 @@ def main(user_token, subreddit, group_id, album_id, post_time):
 					post["data"]["title"].encode("utf-8"),
 					post["data"]["url"].encode("utf-8"),
 					post["data"]["subreddit"].encode("utf-8"),
-				), 
+				),
 				"INFO"
 			)
 		except:
@@ -139,9 +145,9 @@ def main(user_token, subreddit, group_id, album_id, post_time):
 			vk.wall.post,
 			owner_id=group_id, message=message, publish_date=post_time, attachments=media
 		)
-		
+
 if __name__ == '__main__':
 	token = os.environ["user-token"]
 	post_time = int(time.time()) + 1800
 	for everything in groups:
-		threading.Thread(target=main, args=[token, everything["subreddit"], everything["group_id"], everything["album_id"], post_time]).start()
+		threading.Thread(target=main, args=[token, everything["subreddit"], everything["group_id"], post_time]).start()
