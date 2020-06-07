@@ -143,8 +143,8 @@ def main(token):
 							if command in ["ориг", "оригинал", "original"]:
 								attach = event.obj.attachments or None
 								if attach != None and attach[0]["type"] == "wall" and attach[0]["wall"]["to_id"] == -180517625:
-									text = attach["wall"]["text"].split("\n")[0]
-									user = attach["wall"]["text"].split("\n")[-1]
+									text = attach[0]["wall"]["text"].split("\n")[0]
+									user = attach[0]["wall"]["text"].split("\n")[-1]
 									message = f"{localization.nothing_found}"
 
 									r = requests.get(f"https://www.reddit.com{user}.json").json()
