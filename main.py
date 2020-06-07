@@ -141,16 +141,16 @@ def main(token):
 
 						if command in ["ориг", "оригинал", "original"]: # User Commands
 							if command in ["ориг", "оригинал", "original"]:
-								attach = event.obj.attachments[0] or None
-								if attach != None and attach["type"] == "wall" and attach["wall"]["to_id"] == -180517625:
+								attach = event.obj.attachments or None
+								if attach != None and attach[0]["type"] == "wall" and attach[0]["wall"]["to_id"] == -180517625:
 									text = attach["wall"]["text"].split("\n")[0]
 									user = attach["wall"]["text"].split("\n")[-1]
 									message = f"{localization.nothing_found}"
 
 									r = requests.get(f"https://www.reddit.com{user}.json").json()
 
+									print(r)
 									for post in r["data"]["children"]:
-										print(post)
 										if post["kind"] == "t3" and post["data"]["subreddit_name_prefixed"] == "r/mildlyinteresting" and post["data"]["title"] == text:
 											message = post["data"]["permalink"]
 											break
