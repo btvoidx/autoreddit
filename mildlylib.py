@@ -9,6 +9,9 @@ class localization:
 	now = "Теперь"
 	invalid_command = "Такой команды не существует!"
 
+	should_be_wall = "Чтобы эта команда работала, прикрепите нужную запись к сообщению."
+	nothing_found = "Ничего не найдено!"
+
 	mailing_notification = "(Изменять настройки рассылки можно по команде !рассылка)"
 	mailing_level_current = "Ваши текущие настройки рассылки: "
 	mailing_level_changed = "Настройки получения рассылки изменены."

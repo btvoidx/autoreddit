@@ -139,8 +139,24 @@ def main(token):
 							col.insert_one(DB)
 							log("New document was created", "DB")
 
-						if command in [""]: # User Commands
-							pass # Placeholder
+						if command in ["ориг", "оригинал", "original"]: # User Commands
+							if command in ["ориг", "оригинал", "original"]:
+								attach = event.obj.attachments[0]
+								if attach["type"] == "wall" and attach["wall"]["to_id"] == -180517625:
+									text = attach["wall"]["text"].split("\n")[0]
+									user = attach["wall"]["text"].split("\n")[-1]
+									message = f"{localization.nothing_found}"
+
+									r = requests.get(f"https://www.reddit.com{user}.json").json()
+									for post in r["data"]["children"]:
+										if post["kind"] == "t3" and post["data"]["subreddit_name_prefixed"] == "r/mildlyinteresting" and post["data"]["title"] == text:
+											message = post["data"]["permalink"]
+											break
+
+								else:
+									message = f"{localization.should_be_wall}"
+
+								vk.messages.send(peer_id=event.obj.peer_id, random_id=random_id(), message=message)
 
 						elif command in ["рассылка"] and event.obj.from_id in admins: # Admin Commands / DM commands
 							if command == "рассылка":
