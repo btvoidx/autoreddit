@@ -45,9 +45,9 @@ def sendmail(vk, event, list):
 		mlen += 1
 		message = localization.new_post
 		if entry["hide_notification"] == 0 and entry["last_notification"] <= int(time.time()) - 259200: # If notification is not hidden and wasn't shown for 3 days
-			message = message + f"\n\n{localization.mailing_notification}"	
+			message = message + f"\n\n{localization.mailing_notification}"
 
-		try: 
+		try:
 			vk.messages.send(peer_id=entry["_id"], random_id=random_id(), message=message, attachment=f"wall{event.obj.owner_id}_{event.obj.id}")
 			sent_to.append(entry["_id"])
 			mlen = mlen + 1
@@ -66,9 +66,14 @@ def main(token):
 
 	while True:
 		try:
+			if events == []:
+				time.sleep(1)
+				continue
+
 			for e in torem:
 				events.remove(e)
 			torem = []
+
 			for event in events: # Parsing through every event
 				torem.append(event)
 				if event.type == VkBotEventType.WALL_POST_NEW:
@@ -108,7 +113,7 @@ def main(token):
 						else:
 							admins.append(event.obj.from_id)
 
-						if words[0][0] in ["/", "!", "."]: # Removing forced command prefix 
+						if words[0][0] in ["/", "!", "."]: # Removing forced command prefix
 							command = words[0][1:]
 						else:
 							command = words[0]
@@ -126,7 +131,7 @@ def main(token):
 						DB = col.find_one({"_id": event.obj.peer_id},{"_id": 0})
 						if DB == None: # If peer_id not in DB, create it
 							DB = {
-								"_id": event.obj.peer_id, 
+								"_id": event.obj.peer_id,
 								"mailing_level": 0,
 								"hide_notification": 0,
 								"last_notification": 0
