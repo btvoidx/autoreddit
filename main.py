@@ -147,9 +147,8 @@ def main(token):
 									user = attach[0]["wall"]["text"].split("\n")[-1]
 									message = f"{localization.nothing_found}"
 
-									r = requests.get(f"https://www.reddit.com{user}.json").json()
+									r = requests.get(f"https://www.reddit.com{user}.json", headers = {"User-Agent": "Python Automatic posts grabber (by /u/btvoidx)"}).json()
 
-									print(r)
 									for post in r["data"]["children"]:
 										if post["kind"] == "t3" and post["data"]["subreddit_name_prefixed"] == "r/mildlyinteresting" and post["data"]["title"] == text:
 											message = post["data"]["permalink"]
