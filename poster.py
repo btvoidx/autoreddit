@@ -34,19 +34,19 @@ headers = {
 
 # Uploading photo to VK is very annoying process. Why i just cant add images to post using urls?
 def uploadPhoto(vk, url, group_id, album_id):
-	destination = vk.photos.getUploadServer(album_id=album_id, group_id=abs(group_id))
+	destination = vk.photos.getUploadServer(album_id = album_id, group_id = abs(group_id))
 
-	image = requests.get(url, stream=True)
+	image = requests.get(url, stream = True)
 	data = ("image.jpg", image.raw, image.headers['Content-Type'])
-	meta = requests.post(destination['upload_url'], files={'photo': data}).json()
-	return vk.photos.save(group_id=group_id, album_id=album_id, **meta)[0]
+	meta = requests.post(destination['upload_url'], files = {'photo': data}).json()
+	return vk.photos.save(group_id = group_id, album_id = album_id, **meta)[0]
 
 def uploadVideo(vk, url, group_id, title):
-	video = requests.get(url, stream=True)
-	destination = vk.video.save(name=title, group_id=abs(group_id), no_comments=True, repeat=True)
+	video = requests.get(url, stream = True)
+	destination = vk.video.save(name = title, group_id = abs(group_id), no_comments = True, repeat = True)
 
 	data = ("video.mp4", video.raw, video.headers['Content-Type'])
-	requests.post(destination['upload_url'], files={'video_file': data}).json()
+	requests.post(destination['upload_url'], files = {'video_file': data}).json()
 	return destination
 
 # Make sure script can download image/video with url.
@@ -68,7 +68,7 @@ def failproof(failtext, function, **kwargs):
 		try:
 			return function(**kwargs)
 		except:
-			retries = retries + 1
+			retries += 1
 			current_retries += 1
 			if retries > max_retries or current_retries >= 10:
 				log("Hit barrier of maximum fails. Terminating.", "FATAL")
@@ -78,17 +78,17 @@ def failproof(failtext, function, **kwargs):
 
 # Main function.
 def main(user_token, subreddit, group_id, post_time):
-	log("Started parsing {} for {}.".format(subreddit, group_id), "TRACE")
+	log(f"Started parsing {subreddit} for {group_id}.", "TRACE")
 
 	vk_session = vk_api.VkApi(
-		token=user_token
+		token = user_token
 	)
 	vk = vk_session.get_api()
 
 	r = failproof(
 		"Reddit data grab failed.",
 		requests.get,
-		url="https://www.reddit.com/r/{}/top.json?sort=hot&limit={}&raw_json=1".format(subreddit, max_posts), headers=headers
+		url = f"https://www.reddit.com/r/{subreddit}/top.json?sort=hot&limit={max_posts}&raw_json=1", headers = headers
 	)
 
 	album = vk.photos.getAlbums(owner_id = group_id, count = 1)["items"][0]
@@ -101,7 +101,7 @@ def main(user_token, subreddit, group_id, post_time):
 	counter = 0
 	for post in r.json()["data"]["children"]:
 		counter += 1
-		# I don't use here failproof() because script CAN work without printing result. It's not a big problem if it can't.
+		# I don't use here failproof() because script CAN work without printing result. It's not a big problem if it can't print it.
 		try:
 			log("Post {} of {}; title: {}; media url: {}; subreddit: {}".format(
 					counter, max_posts,
@@ -112,38 +112,38 @@ def main(user_token, subreddit, group_id, post_time):
 				"INFO"
 			)
 		except:
-			log("Can't print result of post {}. Trying to continue.".format(counter), "WARN")
+			log(f"Can't print result of post {counter}. Trying to continue.", "WARN")
 
-		message = "{}\n\n/u/{}".format(post["data"]["title"], post["data"]["author"])
-		post_time = post_time + time_between
+		message = f"{post['data']['title']}\n\n/u/{post['data']['author']}"
+		post_time += time_between
 
 
 		newurl = failproof(
-			"URL validation failed. {}".format(post["data"]["url"]),
+			f"URL validation failed. {post['data']['url']}",
 			validateURL,
-			url=post["data"]["url"], media=post["data"]["media"], is_video=post["data"]["is_video"]
+			url = post["data"]["url"], media = post["data"]["media"], is_video = post["data"]["is_video"]
 		)
 
 		if post["data"]["is_video"] == True:
 			video = failproof(
-				"Failed to upload video to VK. {}".format(newurl),
+				f"Failed to upload video to VK. {newurl}",
 				uploadVideo,
-				vk=vk, url=newurl, group_id=abs(group_id), title=post["data"]["title"]
+				vk = vk, url = ewurl, group_id = abs(group_id), title = post["data"]["title"]
 			)
 			media = "video" + str(group_id) + "_" + str(video["video_id"])
 		else:
 			image = failproof(
-				"Failed to upload photo to VK. {}".format(newurl),
+				f"Failed to upload photo to VK. {newurl}",
 				uploadPhoto,
-				vk=vk, url=newurl, group_id=abs(group_id), album_id=album_id
+				vk = vk, url = newurl, group_id = abs(group_id), album_id = album_id
 			)
 			media = "photo" + str(group_id) + "_" + str(image["id"])
 
 
 		failproof(
-			"Unable to schedule post. {}".format(message),
+			f"Unable to schedule post. {message}",
 			vk.wall.post,
-			owner_id=group_id, message=message, publish_date=post_time, attachments=media
+			owner_id = group_id, message = message, publish_date = post_time, attachments = media, copyright = post['link_permalink']
 		)
 
 if __name__ == '__main__':
