@@ -151,7 +151,7 @@ def main(token):
 
 									for post in r["data"]["children"]:
 										if post["kind"] == "t3" and post["data"]["subreddit_name_prefixed"] == "r/mildlyinteresting" and post["data"]["title"] == text:
-											message = post["data"]["permalink"]
+											message = f"https://www.reddit.com/{post['data']['permalink']}"
 											break
 
 								else:
