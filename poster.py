@@ -143,7 +143,7 @@ def main(user_token, subreddit, group_id, post_time):
 		failproof(
 			f"Unable to schedule post. {message}",
 			vk.wall.post,
-			owner_id = group_id, message = message, publish_date = post_time, attachments = media, copyright = f"https://www.reddit.com{post["data"]['permalink']}"
+			owner_id = group_id, message = message, publish_date = post_time, attachments = media, copyright = f"https://www.reddit.com{post['data']['permalink']}"
 		)
 
 if __name__ == '__main__':
