@@ -98,9 +98,7 @@ def main(user_token, subreddit, group_id, post_time):
 
 	album_id = album["id"]
 
-	counter = 0
-	for post in r.json()["data"]["children"]:
-		counter += 1
+	for counter, post in enumerate(r.json()["data"]["children"], start = 1):
 		# I don't use here failproof() because script CAN work without printing result. It's not a big problem if it can't print it.
 		try:
 			log("Post {} of {}; title: {}; media url: {}; subreddit: {}".format(

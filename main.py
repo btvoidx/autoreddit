@@ -39,10 +39,8 @@ def eventloop(vk_session):
 			log(f"An error occurred: {e}.", "ERROR")
 
 def sendmail(vk, event, list):
-	mlen = 0
 	sent_to = []
 	for entry in list:
-		mlen += 1
 		message = localization.new_post
 		if entry["hide_notification"] == 0 and entry["last_notification"] <= int(time.time()) - 259200: # If notification is not hidden and wasn't shown for 3 days
 			message = message + f"\n\n{localization.mailing_notification}"
@@ -50,11 +48,10 @@ def sendmail(vk, event, list):
 		try:
 			vk.messages.send(peer_id=entry["_id"], random_id=random_id(), message=message, attachment=f"wall{event.obj.owner_id}_{event.obj.id}")
 			sent_to.append(entry["_id"])
-			mlen = mlen + 1
 		except Exception as e:
 			log(f"Could not send mail: {e}", "ERROR")
 
-	return mlen, sent_to
+	return sent_to
 
 def main(token):
 	vk_session = vk_api.VkApi(
@@ -88,16 +85,16 @@ def main(token):
 
 
 					if not is_ad and not is_auto: # If ad-free and not automatic
-						mlen, sent_to = sendmail(vk, event, col.find({"mailing_level": 2}))
+						sent_to = sendmail(vk, event, col.find({"mailing_level": 2}))
 						for user_id in sent_to:
 							col.update_one({"_id": user_id}, {"$set":{"last_notification": int(time.time())}})
-						log(f"Sent {mlen} message(s) to level 2 mail.", "MAIL")
+						log(f"Sent {len(sent_to)} message(s) to level 2 mail.", "MAIL")
 
 					if not is_ad: # If ad-free
-						mlen, sent_to = sendmail(vk, event, col.find({"mailing_level": 3}))
+						sent_to = sendmail(vk, event, col.find({"mailing_level": 3}))
 						for user_id in sent_to:
 							col.update_one({"_id": user_id}, {"$set":{"last_notification": int(time.time())}})
-						log(f"Sent {mlen} message(s) to level 3 mail.", "MAIL")
+						log(f"Sent {len(sent_to)} message(s) to level 3 mail.", "MAIL")
 
 				if event.type == VkBotEventType.MESSAGE_NEW:
 					if event.obj.text != "":
